@@ -9,6 +9,8 @@ export interface TriviaCategory {
   questions: TriviaQuestion[];
 }
 
+// NOTE: For simplicity in v1, most correct answers are at position 0.
+// Future improvement: randomize correct answer positions for better challenge.
 export const triviaCategories = {
   ciencia: {
     label: '🔬 Ciência',
@@ -390,7 +392,7 @@ export const triviaCategories = {
       { question: 'Qual é o maior oceano?', options: ['Pacífico', 'Atlântico', 'Índico', 'Ártico'], correctAnswer: 0 },
       { question: 'Qual é o maior continente?', options: ['Ásia', 'África', 'América', 'Europa'], correctAnswer: 0 },
       { question: 'Qual oceano separa Europa de América?', options: ['Atlântico', 'Pacífico', 'Índico', 'Ártico'], correctAnswer: 0 },
-      { question: 'Qual é o rio mais longo?', options: ['Amazonas/Nilo', 'Mississípi', 'Yangtzé', 'Congo'], correctAnswer: 0 },
+      { question: 'Qual é o rio mais longo do mundo?', options: ['Nilo', 'Amazonas', 'Mississípi', 'Yangtzé'], correctAnswer: 0 },
       { question: 'Onde fica a Floresta Amazónica?', options: ['América do Sul', 'África', 'Ásia', 'Oceânia'], correctAnswer: 0 },
       { question: 'Qual é a montanha mais alta?', options: ['Everest', 'K2', 'Kilimanjaro', 'Aconcágua'], correctAnswer: 0 },
       { question: 'Qual é o rio que passa por Paris?', options: ['Sena', 'Tâmisa', 'Danúbio', 'Reno'], correctAnswer: 0 },

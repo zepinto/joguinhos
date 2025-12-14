@@ -212,7 +212,7 @@ export function Trivia({ onBack }: TriviaProps) {
         <div className="mb-6">
           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border-2 border-white/20">
             <div className="text-center text-white/80 text-sm mb-2">Tempo restante</div>
-            <div className={`text-center text-6xl mb-2 ${isLowTime ? 'text-white' : 'text-white'}`}>
+            <div className={`text-center text-6xl mb-2 ${isLowTime ? 'text-red-300' : 'text-white'}`}>
               {timeLeft}s
             </div>
             <div className="text-center text-white/60 text-xs">
