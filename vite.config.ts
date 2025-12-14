@@ -4,6 +4,9 @@
   import path from 'path';
 
   export default defineConfig({
+    // GitHub Pages serves the site from a sub-path (/<repo>/).
+    // Using a relative base keeps asset URLs working regardless of the repo name.
+    base: './',
     plugins: [react()],
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],

@@ -186,7 +186,7 @@ export function Mimica({ onBack }: MimicaProps) {
 
   if (gameState === 'setup') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 p-4">
+      <div className="christmas-overlay xmas-bg min-h-screen p-4">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8 pt-8">
             <h1 className="text-white mb-2">🎬 Mímica</h1>
@@ -199,7 +199,7 @@ export function Mimica({ onBack }: MimicaProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 p-4">
+    <div className="christmas-overlay xmas-bg min-h-screen p-4">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8 pt-8">
           <h1 className="text-white mb-2">🎬 Mímica</h1>

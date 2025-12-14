@@ -116,6 +116,73 @@
     color: inherit;
     border-top-width: 1px;
   }
+/* Christmas / winter theme helpers (keeps palette to existing white + current gradient) */
+.christmas-overlay {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Red/green theme background (requested) */
+.xmas-bg {
+  background: linear-gradient(135deg, #0f7a3a 0%, #b10f2a 55%, #0f7a3a 100%);
+}
+
+.christmas-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Soft "snow sparkle" dots using only white mixed with transparent */
+  background:
+    radial-gradient(circle at 12% 18%, color-mix(in srgb, var(--color-white) 18%, transparent) 0 2px, transparent 3px),
+    radial-gradient(circle at 72% 22%, color-mix(in srgb, var(--color-white) 14%, transparent) 0 1.5px, transparent 3px),
+    radial-gradient(circle at 32% 62%, color-mix(in srgb, var(--color-white) 16%, transparent) 0 2px, transparent 3px),
+    radial-gradient(circle at 85% 72%, color-mix(in srgb, var(--color-white) 12%, transparent) 0 1.5px, transparent 3px);
+}
+
+.snowfall {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.snowflake {
+  position: absolute;
+  top: -12px;
+  left: var(--left, 50%);
+  width: var(--size, 6px);
+  height: var(--size, 6px);
+  background: var(--color-white);
+  border-radius: 9999px;
+  opacity: var(--opacity, 0.8);
+  filter: blur(0.2px);
+  animation:
+    snowfall-fall var(--duration, 9s) linear infinite,
+    snowfall-sway var(--swayDuration, 3.2s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s), var(--delay, 0s);
+}
+
+@keyframes snowfall-fall {
+  from {
+    transform: translateY(-12px);
+  }
+  to {
+    transform: translateY(110vh);
+  }
+}
+
+@keyframes snowfall-sway {
+  0% {
+    margin-left: -8px;
+  }
+  50% {
+    margin-left: 8px;
+  }
+  100% {
+    margin-left: -8px;
+  }
+}
 
   abbr:where([title]) {
     -webkit-text-decoration: underline dotted;

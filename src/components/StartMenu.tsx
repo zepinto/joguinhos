@@ -2,6 +2,13 @@ interface StartMenuProps {
   onSelectGame: (game: 'quem-sou-eu' | 'mimica') => void;
 }
 
+type CSSVarStyle = React.CSSProperties & Record<string, string | number>;
+
+const pseudo = (index: number, seed: number) => {
+  const x = Math.sin(index * 999 + seed * 123.456) * 10000;
+  return x - Math.floor(x);
+};
+
 export function StartMenu({ onSelectGame }: StartMenuProps) {
   const games = [
     {
@@ -18,11 +25,36 @@ export function StartMenu({ onSelectGame }: StartMenuProps) {
     },
   ];
 
+  const snowflakes = Array.from({ length: 40 }, (_, i) => {
+    const left = Math.round(pseudo(i, 1) * 100);
+    const size = 4 + Math.round(pseudo(i, 2) * 6);
+    const duration = 7 + pseudo(i, 3) * 8;
+    const delay = -pseudo(i, 4) * duration;
+    const opacity = 0.35 + pseudo(i, 5) * 0.55;
+    const swayDuration = 2.4 + pseudo(i, 6) * 2.2;
+
+    const style: CSSVarStyle = {
+      '--left': `${left}%`,
+      '--size': `${size}px`,
+      '--duration': `${duration.toFixed(2)}s`,
+      '--delay': `${delay.toFixed(2)}s`,
+      '--opacity': opacity.toFixed(2),
+      '--swayDuration': `${swayDuration.toFixed(2)}s`,
+    };
+
+    return { id: i, style };
+  });
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 p-4">
+    <div className="christmas-overlay xmas-bg min-h-screen p-4">
+      <div className="snowfall" aria-hidden="true">
+        {snowflakes.map((flake) => (
+          <span key={flake.id} className="snowflake" style={flake.style} />
+        ))}
+      </div>
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8 pt-8">
-          <h1 className="text-white text-6xl mb-2">🎮 Joguinhos</h1>
+          <h1 className="text-white text-6xl mb-2">Joguinhos</h1>
           <p className="text-white/90">Escolhe um jogo para começar</p>
         </div>
 

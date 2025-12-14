@@ -8,4 +8,18 @@
   Run `npm i` to install the dependencies.
 
   Run `npm run dev` to start the development server.
+
+    ## Hosting on GitHub Pages
+
+    This project is configured to deploy automatically to GitHub Pages via GitHub Actions.
+
+    Steps:
+    1. Push this repo to GitHub (branch `main`).
+    2. In GitHub: **Settings → Pages**
+      - **Build and deployment** → **Source**: select **GitHub Actions**.
+    3. Push to `main` (or run the workflow manually). The site will be published.
+
+    Notes:
+    - The Vite output folder is `build/` (see `vite.config.ts`).
+    - The Vite `base` is set to `./` so it works from `https://<user>.github.io/<repo>/`.
   
