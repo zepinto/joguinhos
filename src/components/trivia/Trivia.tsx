@@ -103,10 +103,21 @@ export function Trivia({ onBack }: TriviaProps) {
     setUsedQuestions(storedUsed);
     setUsedCount(storedUsed.size);
     
-    // Get a question that hasn't been used
-    const { question, index } = getRandomQuestion();
-    setCurrentQuestion(question);
-    setCurrentQuestionIndex(index);
+    // Get a question that hasn't been used - use selectedCategory directly
+    const questions = triviaCategories[selectedCategory].questions;
+    const availableIndices = questions
+      .map((_, idx) => idx)
+      .filter(idx => !storedUsed.has(idx));
+    
+    let questionIndex: number;
+    if (availableIndices.length === 0) {
+      questionIndex = Math.floor(Math.random() * questions.length);
+    } else {
+      questionIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+    }
+    
+    setCurrentQuestion(questions[questionIndex]);
+    setCurrentQuestionIndex(questionIndex);
     setSelectedAnswer(null);
     
     // Start timer immediately
