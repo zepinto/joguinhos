@@ -6,7 +6,6 @@ interface DrawingCanvasProps {
   word: string;
 }
 
-type Color = '#000000' | '#FF0000' | '#0000FF' | '#00FF00' | '#FFFF00' | '#FFFFFF';
 type StrokeWidth = 2 | 5 | 10;
 
 interface DrawPoint {
@@ -17,18 +16,8 @@ interface DrawPoint {
 export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  const [color, setColor] = useState<Color>('#000000');
   const [strokeWidth, setStrokeWidth] = useState<StrokeWidth>(5);
   const [history, setHistory] = useState<ImageData[]>([]);
-  
-  const colors: { value: Color; label: string; bg: string }[] = [
-    { value: '#000000', label: 'Preto', bg: 'bg-black' },
-    { value: '#FF0000', label: 'Vermelho', bg: 'bg-red-500' },
-    { value: '#0000FF', label: 'Azul', bg: 'bg-blue-500' },
-    { value: '#00FF00', label: 'Verde', bg: 'bg-green-500' },
-    { value: '#FFFF00', label: 'Amarelo', bg: 'bg-yellow-400' },
-    { value: '#FFFFFF', label: 'Branco', bg: 'bg-white border-2 border-gray-300' },
-  ];
 
   const strokeWidths: { value: StrokeWidth; label: string }[] = [
     { value: 2, label: 'Fino' },
@@ -116,7 +105,7 @@ export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
     const ctx = canvas?.getContext('2d');
     if (!ctx) return;
 
-    ctx.strokeStyle = color;
+    ctx.strokeStyle = '#000000';
     ctx.lineWidth = strokeWidth;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -174,20 +163,18 @@ export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
   const isLowTime = timeLeft <= 10;
 
   return (
-    <div className="space-y-4">
-      {/* Word Display */}
-      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border-2 border-white/20">
-        <div className="text-center">
-          <div className="text-white/80 text-sm mb-2">Desenha:</div>
-          <div className="text-white text-2xl font-bold">{word}</div>
-        </div>
-      </div>
-
-      {/* Timer */}
-      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border-2 border-white/20">
-        <div className="text-center">
-          <div className={`text-4xl font-bold ${isLowTime ? 'text-red-400' : 'text-white'}`}>
-            {timeLeft}s
+    <div className="space-y-2 max-h-screen overflow-hidden">
+      {/* Word Display and Timer Combined */}
+      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-2 border-2 border-white/20">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex-1 text-center">
+            <div className="text-white/80 text-xs mb-1">Desenha:</div>
+            <div className="text-white text-xl font-bold">{word}</div>
+          </div>
+          <div className="text-center">
+            <div className={`text-3xl font-bold ${isLowTime ? 'text-red-400' : 'text-white'}`}>
+              {timeLeft}s
+            </div>
           </div>
         </div>
       </div>
@@ -196,7 +183,8 @@ export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
       <div className="bg-white rounded-2xl p-2 shadow-2xl">
         <canvas
           ref={canvasRef}
-          className="w-full h-[300px] touch-none cursor-crosshair"
+          className="w-full h-[200px] touch-none cursor-crosshair"
+          style={{ touchAction: 'none' }}
           onMouseDown={startDrawing}
           onMouseMove={draw}
           onMouseUp={stopDrawing}
@@ -207,32 +195,15 @@ export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
         />
       </div>
 
-      {/* Color Picker */}
-      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border-2 border-white/20">
-        <div className="text-white text-sm mb-2">Cores:</div>
-        <div className="grid grid-cols-6 gap-2">
-          {colors.map((c) => (
-            <button
-              key={c.value}
-              onClick={() => setColor(c.value)}
-              className={`w-full h-12 rounded-xl ${c.bg} ${
-                color === c.value ? 'ring-4 ring-white scale-110' : ''
-              } transition-all active:scale-95`}
-              title={c.label}
-            />
-          ))}
-        </div>
-      </div>
-
       {/* Stroke Width */}
-      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border-2 border-white/20">
-        <div className="text-white text-sm mb-2">Espessura:</div>
+      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-2 border-2 border-white/20">
+        <div className="text-white text-xs mb-1">Espessura:</div>
         <div className="grid grid-cols-3 gap-2">
           {strokeWidths.map((sw) => (
             <button
               key={sw.value}
               onClick={() => setStrokeWidth(sw.value)}
-              className={`py-2 px-4 rounded-xl border-2 transition-all ${
+              className={`py-1.5 px-3 text-sm rounded-xl border-2 transition-all ${
                 strokeWidth === sw.value
                   ? 'bg-white text-purple-600 border-white scale-105'
                   : 'bg-white/20 text-white border-white/30 hover:bg-white/30'
@@ -245,11 +216,11 @@ export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
       </div>
 
       {/* Action Buttons */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         <button
           onClick={handleUndo}
           disabled={history.length <= 1}
-          className={`py-3 px-4 rounded-xl border-2 transition-all ${
+          className={`py-2 px-3 text-sm rounded-xl border-2 transition-all ${
             history.length <= 1
               ? 'bg-white/5 text-white/30 border-white/10'
               : 'bg-white/20 text-white border-white/30 hover:bg-white/30 active:scale-95'
@@ -259,7 +230,7 @@ export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
         </button>
         <button
           onClick={handleClear}
-          className="bg-white/20 text-white py-3 px-4 rounded-xl border-2 border-white/30 hover:bg-white/30 transition-all active:scale-95"
+          className="bg-white/20 text-white py-2 px-3 text-sm rounded-xl border-2 border-white/30 hover:bg-white/30 transition-all active:scale-95"
         >
           🗑️ Limpar
         </button>
@@ -268,7 +239,7 @@ export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
       {/* Done Button */}
       <button
         onClick={handleDone}
-        className="w-full bg-white text-purple-600 py-4 px-6 rounded-xl hover:scale-105 transition-all active:scale-95 shadow-lg font-bold"
+        className="w-full bg-white text-purple-600 py-3 px-4 rounded-xl hover:scale-105 transition-all active:scale-95 shadow-lg font-bold"
       >
         ✓ Terminar Desenho
       </button>
