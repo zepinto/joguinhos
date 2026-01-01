@@ -5,6 +5,10 @@ import { GameConfig } from './DesenhaEPassaSetup';
 import { desenhaEPassaCategories } from './words';
 import { playStartSound, playTimeUpSound, playTickSound } from '../../utils/sounds';
 
+// Constants for empty drawing canvas
+const EMPTY_CANVAS_WIDTH = 400;
+const EMPTY_CANVAS_HEIGHT = 300;
+
 interface DesenhaEPassaGameProps {
   config: GameConfig;
   onNewGame: () => void;
@@ -125,7 +129,7 @@ export function DesenhaEPassaGame({ config, onNewGame, onBackToMenu }: DesenhaEP
     });
 
     setChains(newChains);
-    advanceToNextTurn();
+    advanceToNextTurn(newChains);
   };
 
   const handleSaveGuess = () => {
@@ -142,15 +146,15 @@ export function DesenhaEPassaGame({ config, onNewGame, onBackToMenu }: DesenhaEP
 
     setChains(newChains);
     setCurrentGuess('');
-    advanceToNextTurn();
+    advanceToNextTurn(newChains);
   };
 
-  const advanceToNextTurn = () => {
+  const advanceToNextTurn = (updatedChains: Chain[]) => {
     const nextPlayerIndex = gameState.currentPlayerIndex + 1;
     const nextChainIndex = (gameState.currentChainIndex + 1) % config.numPlayers;
 
     // Check if game is complete (all players have contributed to all chains)
-    const allChainsComplete = chains.every(
+    const allChainsComplete = updatedChains.every(
       (chain) => chain.entries.length >= config.numPlayers
     );
 
@@ -187,8 +191,8 @@ export function DesenhaEPassaGame({ config, onNewGame, onBackToMenu }: DesenhaEP
     if (isDrawing) {
       // Add empty drawing (white canvas)
       const canvas = document.createElement('canvas');
-      canvas.width = 400;
-      canvas.height = 300;
+      canvas.width = EMPTY_CANVAS_WIDTH;
+      canvas.height = EMPTY_CANVAS_HEIGHT;
       const ctx = canvas.getContext('2d');
       if (ctx) {
         ctx.fillStyle = '#FFFFFF';
@@ -210,7 +214,7 @@ export function DesenhaEPassaGame({ config, onNewGame, onBackToMenu }: DesenhaEP
     }
 
     setChains(newChains);
-    advanceToNextTurn();
+    advanceToNextTurn(newChains);
   };
 
   if (gameState.phase === 'reveal') {

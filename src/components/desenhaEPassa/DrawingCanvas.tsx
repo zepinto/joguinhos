@@ -50,9 +50,9 @@ export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
     canvas.height = rect.height * window.devicePixelRatio;
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
-    // Fill with white background
+    // Fill with white background (use display dimensions)
     ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, rect.width, rect.height);
 
     // Save initial state
     saveToHistory();
@@ -137,8 +137,10 @@ export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
     const ctx = canvas?.getContext('2d');
     if (!ctx || !canvas) return;
 
+    // Get display dimensions
+    const rect = canvas.getBoundingClientRect();
     ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, rect.width, rect.height);
     setHistory([]);
     saveToHistory();
   };
