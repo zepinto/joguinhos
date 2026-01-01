@@ -45,33 +45,9 @@ export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
     ctx.fillRect(0, 0, rect.width, rect.height);
 
     // Save initial state
-    saveToHistory();
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    setHistory([imageData]);
   }, []);
-
-  // Handle canvas resize when expanding/collapsing
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // Save current drawing
-    const currentImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    
-    // Resize canvas
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * window.devicePixelRatio;
-    canvas.height = rect.height * window.devicePixelRatio;
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-
-    // Fill with white background
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, rect.width, rect.height);
-
-    // Restore previous drawing
-    ctx.putImageData(currentImageData, 0, 0);
-  }, [isCanvasExpanded]);
 
   const saveToHistory = () => {
     const canvas = canvasRef.current;
