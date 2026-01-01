@@ -1,5 +1,5 @@
 interface StartMenuProps {
-  onSelectGame: (game: 'quem-sou-eu' | 'mimica' | 'trivia') => void;
+  onSelectGame: (game: 'quem-sou-eu' | 'mimica' | 'trivia' | 'intruso') => void;
 }
 
 type CSSVarStyle = React.CSSProperties & Record<string, string | number>;
@@ -28,6 +28,12 @@ export function StartMenu({ onSelectGame }: StartMenuProps) {
       emoji: '🎯',
       title: 'Trivia',
       description: 'Responde às perguntas de cultura geral',
+    },
+    {
+      id: 'intruso' as const,
+      emoji: '🕵️',
+      title: 'Intruso',
+      description: 'Descobre quem é o intruso e o Mr. White',
     },
   ];
 
