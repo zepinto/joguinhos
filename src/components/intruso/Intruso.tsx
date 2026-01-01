@@ -72,8 +72,11 @@ export function Intruso({ onBack }: IntrusoProps) {
       roles.push('mrwhite');
     }
     
-    // Shuffle roles
-    roles.sort(() => Math.random() - 0.5);
+    // Shuffle roles using Fisher-Yates algorithm
+    for (let i = roles.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [roles[i], roles[j]] = [roles[j], roles[i]];
+    }
     
     // Create players with roles
     const newPlayers: PlayerRole[] = roles.map((role, index) => ({

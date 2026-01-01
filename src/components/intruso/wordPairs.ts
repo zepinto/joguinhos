@@ -47,7 +47,7 @@ export const wordPairs: WordPair[] = [
   { civilian: 'Praia', undercover: 'Piscina' },
   { civilian: 'Montanha', undercover: 'Colina' },
   { civilian: 'Cinema', undercover: 'Teatro' },
-  { civilian: 'Restaurante', undercover: 'Café' },
+  { civilian: 'Restaurante', undercover: 'Cantina' },
   { civilian: 'Hospital', undercover: 'Clínica' },
   { civilian: 'Escola', undercover: 'Universidade' },
   { civilian: 'Parque', undercover: 'Jardim' },
