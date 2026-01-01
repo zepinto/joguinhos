@@ -224,6 +224,15 @@ export function DesenhaEPassaGame({ config, onNewGame, onBackToMenu }: DesenhaEP
     />;
   }
 
+  // Wait for chains to be initialized
+  if (chains.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-white text-xl">A preparar o jogo...</div>
+      </div>
+    );
+  }
+
   const chain = getCurrentChain();
   const lastEntry = chain.entries[chain.entries.length - 1];
   const isDrawing = isDrawingPhase();
