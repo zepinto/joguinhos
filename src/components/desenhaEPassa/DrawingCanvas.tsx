@@ -18,6 +18,7 @@ export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
   const [isDrawing, setIsDrawing] = useState(false);
   const [strokeWidth, setStrokeWidth] = useState<StrokeWidth>(5);
   const [history, setHistory] = useState<ImageData[]>([]);
+  const [isCanvasExpanded, setIsCanvasExpanded] = useState(false);
 
   const strokeWidths: { value: StrokeWidth; label: string }[] = [
     { value: 2, label: 'Fino' },
@@ -46,6 +47,31 @@ export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
     // Save initial state
     saveToHistory();
   }, []);
+
+  // Handle canvas resize when expanding/collapsing
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Save current drawing
+    const currentImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    
+    // Resize canvas
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * window.devicePixelRatio;
+    canvas.height = rect.height * window.devicePixelRatio;
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+    // Fill with white background
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, rect.width, rect.height);
+
+    // Restore previous drawing
+    ctx.putImageData(currentImageData, 0, 0);
+  }, [isCanvasExpanded]);
 
   const saveToHistory = () => {
     const canvas = canvasRef.current;
@@ -90,6 +116,7 @@ export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
     if (!ctx) return;
 
     setIsDrawing(true);
+    setIsCanvasExpanded(true);
     ctx.beginPath();
     ctx.moveTo(coords.x, coords.y);
   };
@@ -117,6 +144,7 @@ export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
   const stopDrawing = () => {
     if (isDrawing) {
       setIsDrawing(false);
+      setIsCanvasExpanded(false);
       saveToHistory();
     }
   };
@@ -163,9 +191,11 @@ export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
   const isLowTime = timeLeft <= 10;
 
   return (
-    <div className="space-y-2 max-h-screen overflow-hidden">
-      {/* Word Display and Timer Combined */}
-      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-2 border-2 border-white/20">
+    <div className="space-y-2 h-screen flex flex-col overflow-hidden">
+      {/* Word Display and Timer Combined - Hide when expanded */}
+      <div className={`bg-white/10 backdrop-blur-md rounded-2xl p-2 border-2 border-white/20 transition-all duration-300 ${
+        isCanvasExpanded ? 'h-0 opacity-0 overflow-hidden p-0 border-0' : ''
+      }`}>
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1 text-center">
             <div className="text-white/80 text-xs mb-1">Desenha:</div>
@@ -180,10 +210,14 @@ export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
       </div>
 
       {/* Canvas */}
-      <div className="bg-white rounded-2xl p-2 shadow-2xl">
+      <div className={`bg-white rounded-2xl p-2 shadow-2xl transition-all duration-300 ${
+        isCanvasExpanded ? 'flex-1' : ''
+      }`}>
         <canvas
           ref={canvasRef}
-          className="w-full h-[200px] touch-none cursor-crosshair"
+          className={`w-full touch-none cursor-crosshair transition-all duration-300 ${
+            isCanvasExpanded ? 'h-full' : 'h-[200px]'
+          }`}
           style={{ touchAction: 'none' }}
           onMouseDown={startDrawing}
           onMouseMove={draw}
@@ -195,8 +229,10 @@ export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
         />
       </div>
 
-      {/* Stroke Width */}
-      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-2 border-2 border-white/20">
+      {/* Stroke Width - Hide when expanded */}
+      <div className={`bg-white/10 backdrop-blur-md rounded-2xl p-2 border-2 border-white/20 transition-all duration-300 ${
+        isCanvasExpanded ? 'h-0 opacity-0 overflow-hidden p-0 border-0' : ''
+      }`}>
         <div className="text-white text-xs mb-1">Espessura:</div>
         <div className="grid grid-cols-3 gap-2">
           {strokeWidths.map((sw) => (
@@ -215,8 +251,10 @@ export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="grid grid-cols-2 gap-2">
+      {/* Action Buttons - Hide when expanded */}
+      <div className={`grid grid-cols-2 gap-2 transition-all duration-300 ${
+        isCanvasExpanded ? 'h-0 opacity-0 overflow-hidden' : ''
+      }`}>
         <button
           onClick={handleUndo}
           disabled={history.length <= 1}
@@ -236,10 +274,12 @@ export function DrawingCanvas({ onSave, timeLeft, word }: DrawingCanvasProps) {
         </button>
       </div>
 
-      {/* Done Button */}
+      {/* Done Button - Hide when expanded */}
       <button
         onClick={handleDone}
-        className="w-full bg-white text-purple-600 py-3 px-4 rounded-xl hover:scale-105 transition-all active:scale-95 shadow-lg font-bold"
+        className={`w-full bg-white text-purple-600 py-3 px-4 rounded-xl hover:scale-105 transition-all active:scale-95 shadow-lg font-bold ${
+          isCanvasExpanded ? 'h-0 opacity-0 overflow-hidden py-0' : ''
+        }`}
       >
         ✓ Terminar Desenho
       </button>
