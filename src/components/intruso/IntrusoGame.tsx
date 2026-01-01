@@ -14,42 +14,12 @@ interface PlayerCardProps {
 }
 
 function PlayerCard({ player, isRevealed, onToggle }: PlayerCardProps) {
-  const getRoleIcon = (role: string) => {
-    switch (role) {
-      case 'civilian':
-        return '👤';
-      case 'undercover':
-        return '🕵️';
-      case 'mrwhite':
-        return '❓';
-      default:
-        return '👤';
-    }
-  };
-
-  const getRoleLabel = (role: string) => {
-    switch (role) {
-      case 'civilian':
-        return 'Civil';
-      case 'undercover':
-        return 'Intruso';
-      case 'mrwhite':
-        return 'Mr. White';
-      default:
-        return 'Desconhecido';
-    }
-  };
-
   const getRoleDescription = (role: string) => {
     switch (role) {
-      case 'civilian':
-        return 'És um civil. A tua palavra é:';
-      case 'undercover':
-        return 'És um INTRUSO! A tua palavra é:';
       case 'mrwhite':
-        return 'És o Mr. White! Não tens palavra. Tenta adivinhar qual é a palavra dos outros!';
+        return 'Não tens palavra. Presta atenção às pistas dos outros!';
       default:
-        return '';
+        return 'A tua palavra é:';
     }
   };
 
@@ -76,13 +46,6 @@ function PlayerCard({ player, isRevealed, onToggle }: PlayerCardProps) {
         </div>
       ) : (
         <div className="space-y-4">
-          <div className="text-center">
-            <div className="text-5xl mb-2">{getRoleIcon(player.role)}</div>
-            <div className="text-white font-bold text-xl mb-2">
-              {getRoleLabel(player.role)}
-            </div>
-          </div>
-
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
             <div className="text-white/90 text-sm mb-3 text-center">
               {getRoleDescription(player.role)}
