@@ -1,5 +1,5 @@
 interface StartMenuProps {
-  onSelectGame: (game: 'quem-sou-eu' | 'mimica' | 'trivia' | 'intruso') => void;
+  onSelectGame: (game: 'quem-sou-eu' | 'mimica' | 'trivia' | 'intruso' | 'desenha-e-passa') => void;
 }
 
 type CSSVarStyle = React.CSSProperties & Record<string, string | number>;
@@ -34,6 +34,12 @@ export function StartMenu({ onSelectGame }: StartMenuProps) {
       emoji: '🕵️',
       title: 'Intruso',
       description: 'Descobre quem é o intruso e o Mr. White',
+    },
+    {
+      id: 'desenha-e-passa' as const,
+      emoji: '🎨',
+      title: 'Desenha e Passa',
+      description: 'Desenha e adivinha numa cadeia hilariante',
     },
   ];
 

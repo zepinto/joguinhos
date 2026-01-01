@@ -4,13 +4,14 @@ import { QuemSouEu } from './components/QuemSouEu';
 import { Mimica } from './components/mimica/Mimica';
 import { Trivia } from './components/trivia/Trivia';
 import { Intruso } from './components/intruso/Intruso';
+import { DesenhaEPassa } from './components/desenhaEPassa/DesenhaEPassa';
 
-type GameScreen = 'menu' | 'quem-sou-eu' | 'mimica' | 'trivia' | 'intruso';
+type GameScreen = 'menu' | 'quem-sou-eu' | 'mimica' | 'trivia' | 'intruso' | 'desenha-e-passa';
 
 export default function App() {
   const [currentGame, setCurrentGame] = useState<GameScreen>('menu');
 
-  const handleSelectGame = (game: 'quem-sou-eu' | 'mimica' | 'trivia' | 'intruso') => {
+  const handleSelectGame = (game: 'quem-sou-eu' | 'mimica' | 'trivia' | 'intruso' | 'desenha-e-passa') => {
     setCurrentGame(game);
   };
 
@@ -27,6 +28,8 @@ export default function App() {
       return <Trivia onBack={handleBackToMenu} />;
     case 'intruso':
       return <Intruso onBack={handleBackToMenu} />;
+    case 'desenha-e-passa':
+      return <DesenhaEPassa onBack={handleBackToMenu} />;
     default:
       return <StartMenu onSelectGame={handleSelectGame} />;
   }
