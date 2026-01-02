@@ -44,18 +44,16 @@ function resetUsedNamesForCategory(category: string): void {
 }
 
 const playerColors = [
-  '#FF6B6B', // Red
-  '#4ECDC4', // Teal
-  '#FFE66D', // Yellow
-  '#95E1D3', // Mint
-  '#F38181', // Pink
-  '#AA96DA', // Purple
-  '#FCBAD3', // Light Pink
-  '#FFFFD2', // Light Yellow
-  '#A8E6CF', // Light Green
-  '#FFD3B6', // Peach
-  '#FFAAA5', // Salmon
-  '#C7CEEA', // Lavender
+  '#DC2626', // Red (darker red)
+  '#0891B2', // Cyan (darker teal)
+  '#CA8A04', // Yellow (darker yellow/gold)
+  '#15803D', // Green (darker green)
+  '#DB2777', // Pink (darker pink)
+  '#7C3AED', // Purple (darker purple)
+  '#EA580C', // Orange (darker orange)
+  '#1D4ED8', // Blue (darker blue)
+  '#BE185D', // Magenta (darker magenta)
+  '#B45309', // Amber (darker amber/brown)
 ];
 
 interface QuemSouEuProps {
@@ -134,7 +132,7 @@ export function QuemSouEu({ onBack }: QuemSouEuProps) {
                     Número de Jogadores
                   </label>
                   <div className="grid grid-cols-3 gap-3">
-                    {[2, 3, 4, 5, 6, 8].map(num => (
+                    {[2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
                       <button
                         key={num}
                         onClick={() => setNumPlayers(num)}
