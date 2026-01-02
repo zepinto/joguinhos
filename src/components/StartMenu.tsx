@@ -99,7 +99,10 @@ export function StartMenu({ onSelectGame }: StartMenuProps) {
                 <p className="text-white/70">{game.description}</p>
               </button>
               <button
-                onClick={() => handleShowRules(game.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleShowRules(game.id);
+                }}
                 className="absolute top-4 right-4 w-10 h-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full border-2 border-white/30 flex items-center justify-center text-white font-bold text-lg transition-all hover:scale-110 active:scale-95"
                 aria-label="Ver regras"
               >
