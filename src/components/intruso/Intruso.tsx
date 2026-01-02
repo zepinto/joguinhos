@@ -58,7 +58,7 @@ export function Intruso({ onBack }: IntrusoProps) {
     // Player 1 has 0% chance, players 2 to n/2 have logarithmically increasing probability
     // Players n/2+1 to n have equal probability to player n/2
     const weights: number[] = [];
-    const halfPlayers = Math.floor(numPlayers / 2);
+    const halfPlayers = Math.max(2, Math.floor(numPlayers / 2)); // Ensure minimum of 2 to avoid division by zero
     
     for (let i = 1; i <= numPlayers; i++) {
       if (i === 1) {
@@ -75,6 +75,13 @@ export function Intruso({ onBack }: IntrusoProps) {
     // Function to select a random index based on weights
     const weightedRandomIndex = (weights: number[]): number => {
       const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+      
+      // Handle edge case where all weights are 0
+      if (totalWeight === 0) {
+        // Return a random non-zero weighted position (skip player 1)
+        return Math.floor(Math.random() * (weights.length - 1)) + 1;
+      }
+      
       let random = Math.random() * totalWeight;
       
       for (let i = 0; i < weights.length; i++) {

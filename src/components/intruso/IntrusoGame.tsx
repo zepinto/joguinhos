@@ -12,10 +12,9 @@ interface PlayerCardProps {
   isRevealed: boolean;
   onToggle: (id: number) => void;
   allRevealed: boolean;
-  hasBeenRevealedOnce: boolean;
 }
 
-function PlayerCard({ player, isRevealed, onToggle, allRevealed, hasBeenRevealedOnce }: PlayerCardProps) {
+function PlayerCard({ player, isRevealed, onToggle, allRevealed }: PlayerCardProps) {
   const getRoleDescription = (role: string) => {
     switch (role) {
       case 'mrwhite':
@@ -106,7 +105,7 @@ function PlayerCard({ player, isRevealed, onToggle, allRevealed, hasBeenRevealed
 
 export function IntrusoGame({ players, onNewGame, onBack }: IntrusoGameProps) {
   const [revealedPlayerId, setRevealedPlayerId] = useState<number | null>(null);
-  const [revealedOnce, setRevealedOnce] = useState<Set<number>>(new Set());
+  const [revealedOnce, setRevealedOnce] = useState<Set<number>>(() => new Set());
   const [allRevealed, setAllRevealed] = useState(false);
 
   const toggleCard = (id: number) => {
@@ -115,14 +114,17 @@ export function IntrusoGame({ players, onNewGame, onBack }: IntrusoGameProps) {
       
       // If revealing a card (not hiding), mark it as revealed once
       if (!isCurrentlyRevealed && !revealedOnce.has(id)) {
-        const newRevealedOnce = new Set(revealedOnce);
-        newRevealedOnce.add(id);
-        setRevealedOnce(newRevealedOnce);
-        
-        // Check if all players have now revealed their cards
-        if (newRevealedOnce.size === players.length) {
-          setAllRevealed(true);
-        }
+        setRevealedOnce((prevSet) => {
+          const newSet = new Set(prevSet);
+          newSet.add(id);
+          
+          // Check if all players have now revealed their cards
+          if (newSet.size === players.length) {
+            setAllRevealed(true);
+          }
+          
+          return newSet;
+        });
       }
       
       return isCurrentlyRevealed ? null : id;
@@ -152,7 +154,6 @@ export function IntrusoGame({ players, onNewGame, onBack }: IntrusoGameProps) {
             isRevealed={revealedPlayerId === player.id}
             onToggle={toggleCard}
             allRevealed={allRevealed}
-            hasBeenRevealedOnce={revealedOnce.has(player.id)}
           />
         ))}
       </div>
