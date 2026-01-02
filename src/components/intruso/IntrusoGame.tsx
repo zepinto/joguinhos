@@ -11,15 +11,29 @@ interface PlayerCardProps {
   player: PlayerRole;
   isRevealed: boolean;
   onToggle: (id: number) => void;
+  allRevealed: boolean;
 }
 
-function PlayerCard({ player, isRevealed, onToggle }: PlayerCardProps) {
+function PlayerCard({ player, isRevealed, onToggle, allRevealed }: PlayerCardProps) {
   const getRoleDescription = (role: string) => {
     switch (role) {
       case 'mrwhite':
         return 'Não tens palavra. Presta atenção às pistas dos outros!';
       default:
         return 'A tua palavra é:';
+    }
+  };
+
+  const getRoleLabel = (role: string) => {
+    switch (role) {
+      case 'civilian':
+        return 'Civil';
+      case 'undercover':
+        return 'Intruso';
+      case 'mrwhite':
+        return 'Mr. White';
+      default:
+        return '';
     }
   };
 
@@ -42,24 +56,47 @@ function PlayerCard({ player, isRevealed, onToggle }: PlayerCardProps) {
       {!isRevealed ? (
         <div className="text-center py-8">
           <div className="text-6xl mb-3">🎴</div>
-          <div className="text-white/80">Toca para revelar</div>
+          <div className="text-white/80">
+            {allRevealed ? 'Revelar papel' : 'Toca para revelar'}
+          </div>
         </div>
       ) : (
         <div className="space-y-4">
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-            <div className="text-white/90 text-sm mb-3 text-center">
-              {getRoleDescription(player.role)}
-            </div>
-            {player.role !== 'mrwhite' && (
-              <div className="text-white text-2xl font-bold text-center">
-                {player.word}
+          {!allRevealed ? (
+            // Phase 1: Show the word
+            <>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="text-white/90 text-sm mb-3 text-center">
+                  {getRoleDescription(player.role)}
+                </div>
+                {player.role !== 'mrwhite' && (
+                  <div className="text-white text-2xl font-bold text-center">
+                    {player.word}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
 
-          <div className="text-white/60 text-xs text-center">
-            Toca para esconder
-          </div>
+              <div className="text-white/60 text-xs text-center">
+                Toca para esconder
+              </div>
+            </>
+          ) : (
+            // Phase 2: Show the role
+            <>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="text-white/90 text-sm mb-3 text-center">
+                  O teu papel é:
+                </div>
+                <div className="text-white text-2xl font-bold text-center">
+                  {getRoleLabel(player.role)}
+                </div>
+              </div>
+
+              <div className="text-white/60 text-xs text-center">
+                Toca para esconder
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>
@@ -68,9 +105,30 @@ function PlayerCard({ player, isRevealed, onToggle }: PlayerCardProps) {
 
 export function IntrusoGame({ players, onNewGame, onBack }: IntrusoGameProps) {
   const [revealedPlayerId, setRevealedPlayerId] = useState<number | null>(null);
+  const [revealedOnce, setRevealedOnce] = useState<Set<number>>(() => new Set());
+  const [allRevealed, setAllRevealed] = useState(false);
 
   const toggleCard = (id: number) => {
-    setRevealedPlayerId((prev) => (prev === id ? null : id));
+    setRevealedPlayerId((prev) => {
+      const isCurrentlyRevealed = prev === id;
+      
+      // If revealing a card (not hiding), mark it as revealed once
+      if (!isCurrentlyRevealed && !revealedOnce.has(id)) {
+        setRevealedOnce((prevSet) => {
+          const newSet = new Set(prevSet);
+          newSet.add(id);
+          
+          // Check if all players have now revealed their cards
+          if (newSet.size === players.length) {
+            setAllRevealed(true);
+          }
+          
+          return newSet;
+        });
+      }
+      
+      return isCurrentlyRevealed ? null : id;
+    });
   };
 
   return (
@@ -95,6 +153,7 @@ export function IntrusoGame({ players, onNewGame, onBack }: IntrusoGameProps) {
             player={player}
             isRevealed={revealedPlayerId === player.id}
             onToggle={toggleCard}
+            allRevealed={allRevealed}
           />
         ))}
       </div>

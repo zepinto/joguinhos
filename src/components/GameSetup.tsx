@@ -21,7 +21,7 @@ export function GameSetup({ onStart, categories }: GameSetupProps) {
             Número de Jogadores
           </label>
           <div className="grid grid-cols-3 gap-3">
-            {[2, 3, 4, 5, 6, 8].map(num => (
+            {[2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
               <button
                 key={num}
                 onClick={() => setNumPlayers(num)}
