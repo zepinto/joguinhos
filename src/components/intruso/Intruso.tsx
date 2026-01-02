@@ -9,6 +9,7 @@ interface IntrusoProps {
 
 export interface PlayerRole {
   id: number;
+  name: string;
   role: 'civilian' | 'undercover' | 'mrwhite';
   word: string;
   color: string;
@@ -47,28 +48,30 @@ export function Intruso({ onBack }: IntrusoProps) {
   const [gameState, setGameState] = useState<GameState>('setup');
   const [players, setPlayers] = useState<PlayerRole[]>([]);
 
-  const handleStart = (numPlayers: number) => {
+  const handleStart = (numPlayers: number, playerNames: string[]) => {
     // Calculate roles
     const { undercover, mrWhite } = calculateRoles(numPlayers);
     
     // Get random word pair
     const wordPair = wordPairs[Math.floor(Math.random() * wordPairs.length)];
     
-    // Create weighted random selection for Mr. White placement
-    // Player 1 has 0% chance, players 2 to n/2 have logarithmically increasing probability
-    // Players n/2+1 to n have equal probability to player n/2
-    const weights: number[] = [];
-    const halfPlayers = Math.max(2, Math.floor(numPlayers / 2)); // Ensure minimum of 2 to avoid division by zero
+    // Get and rotate starting player
+    const storedStartingPlayer = localStorage.getItem('intruso-starting-player');
+    let startingPlayerIndex = storedStartingPlayer ? parseInt(storedStartingPlayer, 10) : 0;
     
-    for (let i = 1; i <= numPlayers; i++) {
-      if (i === 1) {
-        weights.push(0); // Player 1 never gets Mr. White
-      } else if (i <= halfPlayers) {
-        // Logarithmic growth from player 2 to n/2
-        weights.push(Math.log(i) / Math.log(halfPlayers));
+    // Rotate to next player for this game
+    startingPlayerIndex = (startingPlayerIndex + 1) % numPlayers;
+    localStorage.setItem('intruso-starting-player', startingPlayerIndex.toString());
+    
+    // Create weighted random selection for Mr. White placement
+    // Starting player (position 0) has 0% chance, all others have equal probability (weight 1)
+    const weights: number[] = [];
+    
+    for (let i = 0; i < numPlayers; i++) {
+      if (i === 0) {
+        weights.push(0); // Starting player never gets Mr. White
       } else {
-        // Players after n/2 get same weight as n/2
-        weights.push(1);
+        weights.push(1); // All others have equal probability
       }
     }
     
@@ -78,7 +81,7 @@ export function Intruso({ onBack }: IntrusoProps) {
       
       // Handle edge case where all weights are 0
       if (totalWeight === 0) {
-        // Return a random non-zero weighted position (skip player 1)
+        // Return a random non-zero weighted position (skip position 0)
         return Math.floor(Math.random() * (weights.length - 1)) + 1;
       }
       
@@ -119,9 +122,17 @@ export function Intruso({ onBack }: IntrusoProps) {
       roles[position] = 'undercover';
     }
     
+    // Reorder player names so starting player is first
+    const reorderedNames: string[] = [];
+    for (let i = 0; i < numPlayers; i++) {
+      const originalIndex = (startingPlayerIndex + i) % numPlayers;
+      reorderedNames.push(playerNames[originalIndex]);
+    }
+    
     // Create players with roles
     const newPlayers: PlayerRole[] = roles.map((role, index) => ({
       id: index + 1,
+      name: reorderedNames[index],
       role,
       word: role === 'civilian' ? wordPair.civilian : role === 'undercover' ? wordPair.undercover : 'Mr. White',
       color: playerColors[index % playerColors.length],

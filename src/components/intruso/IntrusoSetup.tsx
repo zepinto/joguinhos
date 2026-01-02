@@ -1,20 +1,101 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { calculateRoles } from './Intruso';
 
 interface IntrusoSetupProps {
-  onStart: (numPlayers: number) => void;
+  onStart: (numPlayers: number, playerNames: string[]) => void;
   onBack: () => void;
 }
 
 export function IntrusoSetup({ onStart, onBack }: IntrusoSetupProps) {
+  const [step, setStep] = useState<'players' | 'names'>('players');
   const [numPlayers, setNumPlayers] = useState(5);
+  const [playerNames, setPlayerNames] = useState<string[]>([]);
+
+  // Load saved names from localStorage
+  useEffect(() => {
+    const savedNames = localStorage.getItem('intruso-player-names');
+    if (savedNames) {
+      try {
+        const parsed = JSON.parse(savedNames);
+        if (Array.isArray(parsed)) {
+          setPlayerNames(parsed);
+        }
+      } catch (e) {
+        // Ignore parse errors
+      }
+    }
+  }, []);
+
+  const handleContinueToNames = () => {
+    // Ensure we have the right number of names
+    const names: string[] = [];
+    for (let i = 0; i < numPlayers; i++) {
+      names.push(playerNames[i] || `Jogador ${i + 1}`);
+    }
+    setPlayerNames(names);
+    setStep('names');
+  };
 
   const handleStart = () => {
-    onStart(numPlayers);
+    // Save names to localStorage
+    localStorage.setItem('intruso-player-names', JSON.stringify(playerNames));
+    onStart(numPlayers, playerNames);
+  };
+
+  const updatePlayerName = (index: number, name: string) => {
+    const newNames = [...playerNames];
+    newNames[index] = name;
+    setPlayerNames(newNames);
   };
 
   const { undercover, mrWhite } = calculateRoles(numPlayers);
   const civilians = numPlayers - undercover - mrWhite;
+
+  if (step === 'names') {
+    return (
+      <div className="space-y-4">
+        <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border-2 border-white/20 shadow-2xl">
+          <div className="space-y-6">
+            <div className="text-center">
+              <h3 className="text-white font-bold text-xl mb-2">👥 Nomes dos Jogadores</h3>
+              <p className="text-white/80 text-sm">Introduz os nomes de cada jogador</p>
+            </div>
+
+            {/* Player Names Input */}
+            <div className="space-y-3">
+              {Array.from({ length: numPlayers }, (_, i) => (
+                <div key={i}>
+                  <input
+                    type="text"
+                    value={playerNames[i] || ''}
+                    onChange={(e) => updatePlayerName(i, e.target.value)}
+                    placeholder={`Jogador ${i + 1}`}
+                    className="w-full px-4 py-3 rounded-xl bg-white/20 border-2 border-white/30 text-white placeholder-white/50 focus:bg-white/30 focus:border-white/50 focus:outline-none transition-all"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Start Button */}
+            <button
+              onClick={handleStart}
+              className="w-full bg-white text-purple-600 py-4 px-6 rounded-xl hover:scale-105 transition-all active:scale-95 shadow-lg font-bold"
+            >
+              🎮 Iniciar Jogo
+            </button>
+          </div>
+        </div>
+
+        {/* Back Button */}
+        <button
+          onClick={() => setStep('players')}
+          className="w-full bg-white/10 backdrop-blur-sm text-white py-3 px-6 rounded-xl border-2 border-white/30 hover:bg-white/20 transition-all active:scale-95"
+        >
+          ← Voltar
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -73,12 +154,12 @@ export function IntrusoSetup({ onStart, onBack }: IntrusoSetupProps) {
             </div>
           </div>
 
-          {/* Start Button */}
+          {/* Continue Button */}
           <button
-            onClick={handleStart}
+            onClick={handleContinueToNames}
             className="w-full bg-white text-purple-600 py-4 px-6 rounded-xl hover:scale-105 transition-all active:scale-95 shadow-lg font-bold"
           >
-            🎮 Iniciar Jogo
+            Continuar →
           </button>
         </div>
       </div>

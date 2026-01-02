@@ -46,7 +46,7 @@ function PlayerCard({ player, isRevealed, onToggle, allRevealed }: PlayerCardPro
       }}
     >
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-white font-bold text-lg">Jogador {player.id}</h3>
+        <h3 className="text-white font-bold text-lg">{player.name}</h3>
         <div
           className="w-8 h-8 rounded-full"
           style={{ backgroundColor: player.color }}
@@ -139,8 +139,11 @@ export function IntrusoGame({ players, onNewGame, onBack }: IntrusoGameProps) {
           <p className="mb-2">
             🎭 <strong>Cada jogador deve ver apenas a sua própria carta!</strong>
           </p>
-          <p>
+          <p className="mb-2">
             Passem o dispositivo de jogador em jogador. Cada um revela a sua carta, memoriza, e esconde antes de passar.
+          </p>
+          <p className="text-white font-bold">
+            ⭐ {players[0].name} começa o jogo!
           </p>
         </div>
       </div>
