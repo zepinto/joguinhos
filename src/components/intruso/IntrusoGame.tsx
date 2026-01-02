@@ -12,9 +12,10 @@ interface PlayerCardProps {
   isRevealed: boolean;
   onToggle: (id: number) => void;
   allRevealed: boolean;
+  hasSeenCard: boolean;
 }
 
-function PlayerCard({ player, isRevealed, onToggle, allRevealed }: PlayerCardProps) {
+function PlayerCard({ player, isRevealed, onToggle, allRevealed, hasSeenCard }: PlayerCardProps) {
   const getRoleDescription = (role: string) => {
     switch (role) {
       case 'mrwhite':
@@ -62,8 +63,8 @@ function PlayerCard({ player, isRevealed, onToggle, allRevealed }: PlayerCardPro
         </div>
       ) : (
         <div className="space-y-4">
-          {!allRevealed ? (
-            // Phase 1: Show the word
+          {!hasSeenCard ? (
+            // Phase 1: Show the word (first time revealing)
             <>
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                 <div className="text-white/90 text-sm mb-3 text-center">
@@ -81,7 +82,7 @@ function PlayerCard({ player, isRevealed, onToggle, allRevealed }: PlayerCardPro
               </div>
             </>
           ) : (
-            // Phase 2: Show the role
+            // Phase 2: Show the role (subsequent reveals)
             <>
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                 <div className="text-white/90 text-sm mb-3 text-center">
@@ -106,28 +107,38 @@ function PlayerCard({ player, isRevealed, onToggle, allRevealed }: PlayerCardPro
 export function IntrusoGame({ players, onNewGame, onBack }: IntrusoGameProps) {
   const [revealedPlayerId, setRevealedPlayerId] = useState<number | null>(null);
   const [revealedOnce, setRevealedOnce] = useState<Set<number>>(() => new Set());
+  const [hasHiddenCard, setHasHiddenCard] = useState<Set<number>>(() => new Set());
   const [allRevealed, setAllRevealed] = useState(false);
 
   const toggleCard = (id: number) => {
     setRevealedPlayerId((prev) => {
       const isCurrentlyRevealed = prev === id;
       
-      // If revealing a card (not hiding), mark it as revealed once
-      if (!isCurrentlyRevealed && !revealedOnce.has(id)) {
-        setRevealedOnce((prevSet) => {
+      if (isCurrentlyRevealed) {
+        // Hiding the card - mark that this player has hidden their card at least once
+        setHasHiddenCard((prevSet) => {
           const newSet = new Set(prevSet);
           newSet.add(id);
-          
-          // Check if all players have now revealed their cards
-          if (newSet.size === players.length) {
-            setAllRevealed(true);
-          }
-          
           return newSet;
         });
+        return null;
+      } else {
+        // Revealing the card
+        if (!revealedOnce.has(id)) {
+          setRevealedOnce((prevSet) => {
+            const newSet = new Set(prevSet);
+            newSet.add(id);
+            
+            // Check if all players have now revealed their cards
+            if (newSet.size === players.length) {
+              setAllRevealed(true);
+            }
+            
+            return newSet;
+          });
+        }
+        return id;
       }
-      
-      return isCurrentlyRevealed ? null : id;
     });
   };
 
@@ -157,6 +168,7 @@ export function IntrusoGame({ players, onNewGame, onBack }: IntrusoGameProps) {
             isRevealed={revealedPlayerId === player.id}
             onToggle={toggleCard}
             allRevealed={allRevealed}
+            hasSeenCard={hasHiddenCard.has(player.id)}
           />
         ))}
       </div>
