@@ -118,15 +118,17 @@ export function IntrusoGame({ players, onNewGame, onBack }: IntrusoGameProps) {
         setRevealedOnce((prevSet) => {
           const newSet = new Set(prevSet);
           newSet.add(id);
+          
+          // Check if all players have now revealed their cards at least once
+          if (newSet.size === players.length) {
+            setAllRevealed(true);
+          }
+          
           return newSet;
         });
         return null;
       } else {
         // Revealing the card
-        // Check if all players have now revealed their cards at least once
-        if (revealedOnce.size + 1 >= players.length && !revealedOnce.has(id)) {
-          setAllRevealed(true);
-        }
         return id;
       }
     });
