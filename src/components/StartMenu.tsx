@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { RulesModal } from './RulesModal';
+
 interface StartMenuProps {
   onSelectGame: (game: 'quem-sou-eu' | 'mimica' | 'trivia' | 'intruso' | 'desenha-e-passa') => void;
 }
@@ -10,6 +13,9 @@ const pseudo = (index: number, seed: number) => {
 };
 
 export function StartMenu({ onSelectGame }: StartMenuProps) {
+  const [rulesModalOpen, setRulesModalOpen] = useState(false);
+  const [selectedGame, setSelectedGame] = useState<'quem-sou-eu' | 'mimica' | 'trivia' | 'intruso' | 'desenha-e-passa' | null>(null);
+
   const games = [
     {
       id: 'quem-sou-eu' as const,
@@ -63,6 +69,11 @@ export function StartMenu({ onSelectGame }: StartMenuProps) {
     return { id: i, style };
   });
 
+  const handleShowRules = (gameId: typeof games[number]['id']) => {
+    setSelectedGame(gameId);
+    setRulesModalOpen(true);
+  };
+
   return (
     <div className="christmas-overlay xmas-bg min-h-screen p-4">
       <div className="snowfall" aria-hidden="true">
@@ -78,18 +89,34 @@ export function StartMenu({ onSelectGame }: StartMenuProps) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {games.map((game) => (
-            <button
-              key={game.id}
-              onClick={() => onSelectGame(game.id)}
-              className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border-2 border-white/20 shadow-2xl hover:bg-white/30 hover:scale-105 transition-all active:scale-95"
-            >
-              <div className="text-6xl mb-4">{game.emoji}</div>
-              <h2 className="text-white text-2xl mb-2">{game.title}</h2>
-              <p className="text-white/70">{game.description}</p>
-            </button>
+            <div key={game.id} className="relative">
+              <button
+                onClick={() => onSelectGame(game.id)}
+                className="w-full bg-white/10 backdrop-blur-md rounded-3xl p-8 border-2 border-white/20 shadow-2xl hover:bg-white/30 hover:scale-105 transition-all active:scale-95"
+              >
+                <div className="text-6xl mb-4">{game.emoji}</div>
+                <h2 className="text-white text-2xl mb-2">{game.title}</h2>
+                <p className="text-white/70">{game.description}</p>
+              </button>
+              <button
+                onClick={() => handleShowRules(game.id)}
+                className="absolute top-4 right-4 w-10 h-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full border-2 border-white/30 flex items-center justify-center text-white font-bold text-lg transition-all hover:scale-110 active:scale-95"
+                aria-label="Ver regras"
+              >
+                ?
+              </button>
+            </div>
           ))}
         </div>
       </div>
+      
+      {selectedGame && (
+        <RulesModal
+          isOpen={rulesModalOpen}
+          onClose={() => setRulesModalOpen(false)}
+          gameId={selectedGame}
+        />
+      )}
     </div>
   );
 }
