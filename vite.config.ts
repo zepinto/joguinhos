@@ -16,8 +16,8 @@
         manifest: {
           name: 'Joguinhos - Jogos de Festa',
           short_name: 'Joguinhos',
-          description: 'Jogos de festa para o Natal',
-          theme_color: '#dc2626',
+          description: 'Jogos de festa para o Carnaval',
+          theme_color: '#FFD700',
           background_color: '#1a1a1a',
           display: 'standalone',
           orientation: 'portrait',

@@ -49,13 +49,17 @@ export function StartMenu({ onSelectGame }: StartMenuProps) {
     },
   ];
 
-  const snowflakes = Array.from({ length: 40 }, (_, i) => {
+  const confetti = Array.from({ length: 40 }, (_, i) => {
     const left = Math.round(pseudo(i, 1) * 100);
     const size = 4 + Math.round(pseudo(i, 2) * 6);
     const duration = 7 + pseudo(i, 3) * 8;
     const delay = -pseudo(i, 4) * duration;
     const opacity = 0.35 + pseudo(i, 5) * 0.55;
     const swayDuration = 2.4 + pseudo(i, 6) * 2.2;
+    
+    // Carnival colors array
+    const colors = ['#FFD700', '#9933FF', '#00A86B'];
+    const colorIndex = i % colors.length;
 
     const style: CSSVarStyle = {
       '--left': `${left}%`,
@@ -64,6 +68,7 @@ export function StartMenu({ onSelectGame }: StartMenuProps) {
       '--delay': `${delay.toFixed(2)}s`,
       '--opacity': opacity.toFixed(2),
       '--swayDuration': `${swayDuration.toFixed(2)}s`,
+      '--confetti-color': colors[colorIndex],
     };
 
     return { id: i, style };
@@ -75,10 +80,10 @@ export function StartMenu({ onSelectGame }: StartMenuProps) {
   };
 
   return (
-    <div className="christmas-overlay xmas-bg min-h-screen p-4">
-      <div className="snowfall" aria-hidden="true">
-        {snowflakes.map((flake) => (
-          <span key={flake.id} className="snowflake" style={flake.style} />
+    <div className="carnival-overlay carnival-bg min-h-screen p-4">
+      <div className="confetti-fall" aria-hidden="true">
+        {confetti.map((piece) => (
+          <span key={piece.id} className="confetti" style={piece.style} />
         ))}
       </div>
       <div className="max-w-2xl mx-auto">
