@@ -42,7 +42,6 @@ const roleEmoji: Record<LobisomemRole, string> = {
 interface DistributionCardProps {
   player: LobisomemPlayer;
   isRevealed: boolean;
-  hasSeenCard: boolean;
   onToggle: (id: number) => void;
   allRevealed: boolean;
 }
@@ -50,7 +49,6 @@ interface DistributionCardProps {
 function DistributionCard({
   player,
   isRevealed,
-  hasSeenCard,
   onToggle,
   allRevealed,
 }: DistributionCardProps) {
@@ -74,33 +72,16 @@ function DistributionCard({
         </div>
       ) : (
         <div className="space-y-4">
-          {!hasSeenCard ? (
-            <>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="text-white/90 text-sm mb-3 text-center">O teu papel é:</div>
-                <div className="text-white text-3xl text-center mb-1">
-                  {roleEmoji[player.role]}
-                </div>
-                <div className="text-white text-2xl font-bold text-center">
-                  {roleLabel[player.role]}
-                </div>
-              </div>
-              <div className="text-white/60 text-xs text-center">Toca para esconder</div>
-            </>
-          ) : (
-            <>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="text-white/90 text-sm mb-3 text-center">O teu papel é:</div>
-                <div className="text-white text-3xl text-center mb-1">
-                  {roleEmoji[player.role]}
-                </div>
-                <div className="text-white text-2xl font-bold text-center">
-                  {roleLabel[player.role]}
-                </div>
-              </div>
-              <div className="text-white/60 text-xs text-center">Toca para esconder</div>
-            </>
-          )}
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+            <div className="text-white/90 text-sm mb-3 text-center">O teu papel é:</div>
+            <div className="text-white text-3xl text-center mb-1">
+              {roleEmoji[player.role]}
+            </div>
+            <div className="text-white text-2xl font-bold text-center">
+              {roleLabel[player.role]}
+            </div>
+          </div>
+          <div className="text-white/60 text-xs text-center">Toca para esconder</div>
         </div>
       )}
     </div>
@@ -354,7 +335,6 @@ export function LobisomemGame({ players: initialPlayers, config, onNewGame, onBa
               key={player.id}
               player={player}
               isRevealed={revealedPlayerId === player.id}
-              hasSeenCard={revealedOnce.has(player.id)}
               onToggle={toggleCard}
               allRevealed={allRevealed}
             />
