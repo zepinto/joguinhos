@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { RulesModal } from './RulesModal';
 
 interface StartMenuProps {
-  onSelectGame: (game: 'quem-sou-eu' | 'mimica' | 'trivia' | 'intruso' | 'desenha-e-passa') => void;
+  onSelectGame: (game: 'quem-sou-eu' | 'mimica' | 'trivia' | 'intruso' | 'desenha-e-passa' | 'lobisomem') => void;
 }
 
 type CSSVarStyle = React.CSSProperties & Record<string, string | number>;
@@ -14,7 +14,7 @@ const pseudo = (index: number, seed: number) => {
 
 export function StartMenu({ onSelectGame }: StartMenuProps) {
   const [rulesModalOpen, setRulesModalOpen] = useState(false);
-  const [selectedGame, setSelectedGame] = useState<'quem-sou-eu' | 'mimica' | 'trivia' | 'intruso' | 'desenha-e-passa' | null>(null);
+  const [selectedGame, setSelectedGame] = useState<'quem-sou-eu' | 'mimica' | 'trivia' | 'intruso' | 'desenha-e-passa' | 'lobisomem' | null>(null);
 
   const games = [
     {
@@ -46,6 +46,12 @@ export function StartMenu({ onSelectGame }: StartMenuProps) {
       emoji: '🎨',
       title: 'Desenha e Passa',
       description: 'Desenha e adivinha numa cadeia hilariante',
+    },
+    {
+      id: 'lobisomem' as const,
+      emoji: '🐺',
+      title: 'Lobisomem',
+      description: 'Descobre os lobisomens antes que eliminem a aldeia',
     },
   ];
 

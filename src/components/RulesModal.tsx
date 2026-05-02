@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 interface RulesModalProps {
   isOpen: boolean;
   onClose: () => void;
-  gameId: 'quem-sou-eu' | 'mimica' | 'trivia' | 'intruso' | 'desenha-e-passa';
+  gameId: 'quem-sou-eu' | 'mimica' | 'trivia' | 'intruso' | 'desenha-e-passa' | 'lobisomem';
 }
 
 const gameRules = {
@@ -62,6 +62,19 @@ const gameRules = {
       'A sua resposta passa ao jogador seguinte, que desenha essa palavra.',
       'Alterna entre desenhar e adivinhar até voltar ao início.',
       'No final, vejam como a palavra original evoluiu - normalmente com resultados hilariantes!',
+    ],
+  },
+  'lobisomem': {
+    title: '🐺 Lobisomem',
+    rules: [
+      '🐺 Os Lobisomens eliminam um aldeão por noite, em segredo.',
+      '👤 Os Aldeões votam de dia para eliminar um suspeito.',
+      '🔮 A Vidente (opcional) descobre o papel de um jogador por noite.',
+      '💉 O Médico (opcional) protege um jogador por noite, podendo proteger-se a si próprio.',
+      '🏹 O Caçador (opcional) leva consigo um jogador à escolha quando morre.',
+      'Os lobisomens vencem quando o seu número é igual ou superior ao dos não-lobisomens.',
+      'Os aldeões vencem quando todos os lobisomens forem eliminados.',
+      'Cada jogador vê o seu papel em privado no início do jogo.',
     ],
   },
 };
